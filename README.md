@@ -11,6 +11,10 @@ Team Members: Niki Lin & XinLing Sun
 &emsp;Many job seekers currently struggle to understand which career paths align best with their skills and experience. Our website would save users a lot of time trying to search for a career in the workforce, give those who are unsure about their career path a personal recommendation for their future, and allow them to improve their resume.
 
 ---
+## Installation Instruction
+**In Progress**
+
+---
 ## Technology Stack
 - **Backend:** Java, Python, Spring Boot, Apache PDFBox, Apache POI
 - **Frontend:** HTML, CSS, JavaScript
