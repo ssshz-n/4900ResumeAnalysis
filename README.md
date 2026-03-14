@@ -12,7 +12,8 @@ Team Members: Niki Lin & XinLing Sun
 
 ---
 ## Installation Instruction
-**In Progress**
+Click on this link to view our website:
+https://ssshz-n.github.io/4900ResumeAnalysis/
 
 ---
 ## Technology Stack
