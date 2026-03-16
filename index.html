@@ -10,6 +10,7 @@
                theme:{
                    extend: {
                        colors: {
+                          <!-- Theme colors for the website -->
                        navy: '#355872',
                        blue: '#7AAACE',
                        skyblue: '#9CD5FF',
@@ -20,6 +21,7 @@
                }
            }
        </script>
+      
        <style>
            .glass{
                background: rgba(255, 255, 255, 0.7);
@@ -36,6 +38,7 @@
                        <div class = "text-navy text-4xl font-bold tracking-tighter">
                            ResumerAnalyzer
                        </div>
+                      <!-- Creating sign-up and login buttons -->
                        <div class = "hidden md:flex items-center gap-6">
                            <button onclick = "signUp()" class = "bg-navy px-5 py-2 border-2 border-navy rounded-full hover:bg-navy hover:text-white transition">
                                Sign Up
@@ -67,8 +70,8 @@
                            <path stroke-linecap = "round" stroke-linejoin = "round" stroke-width = "1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                        </svg>
 
-
-                       <p class = "text-xl font-semibold mb-1 text-navy">
+                      <!-- Area to upload resume for analysis --> 
+                      <p class = "text-xl font-semibold mb-1 text-navy">
                            Drag & Drop Your Resume Here
                        </p>
                        <p class = "text-sm text-gray-500">
