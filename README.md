@@ -20,3 +20,12 @@ Click on this link to view our website:-D<br>
 - **Backend:** Java, Python, Spring Boot, Apache PDFBox, Apache POI
 - **Frontend:** HTML, CSS, JavaScript
 - **Others:** MySQL, REST API, Git and GitHub, VS Code, Draw.io, MacOS laptops, tailWind and/or Bootstrap
+
+---
+## Features
+- ✏️ Resume builder & editor
+- 🤖 AI-powered resume parsing & analysis
+- 🎯 AI career path recommendations
+- 💼 Personalized job listing
+- 📈 Job match percentage calculation
+- 🎓 Skill gap analysis
