@@ -1,82 +1,134 @@
 <!DOCTYPE html>
 <html lang ="en">
-    <head>
-        <meta charset = "UTF-8">
-        <meta name = "viewport" content = "width=device-width, initial-scale" =1.0>
-        <title>Resume Analyzer</title>
-        <script src ="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme:{
-                    extend: { 
-                        colors: {
-                        navy: '#355872',
-                        blue: '#7AAACE',
-                        skyblue: '#9CD5FF',
-                        cream: '#F7F8F0',
-                        lightnavy:'#6389a5',
-                        }
-                    }
-                }
-            }
-        </script>
+   <head>
+       <meta charset = "UTF-8">
+       <meta name = "viewport" content = "width=device-width, initial-scale" =1.0>
+       <title>Resume Analyzer</title>
+       <script src ="https://cdn.tailwindcss.com"></script>
+       <script>
+           tailwind.config = {
+               theme:{
+                   extend: {
+                       colors: {
+                       navy: '#355872',
+                       blue: '#7AAACE',
+                       skyblue: '#9CD5FF',
+                       cream: '#F7F8F0',
+                       lightnavy:'#6389a5',
+                       }
+                   }
+               }
+           }
+       </script>
+       <style>
+           .glass{
+               background: rgba(255, 255, 255, 0.7);
+               backdrop-filter: blur (10px);
+               border: 1px solid rgba(255, 255, 255, 0.2);
+           }
+       </style>
 
-        <style>
-            .glass{
-                background: rgba(255, 255, 255, 0.7);
-                backdrop-filter: blur (10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-            }
-        </style>
 
-        </head>
-            <body class = "bg-cream min-h-screen font-sans text-navy">
-                <nav class = "bg-cream text-white w-full py-5 shadow-lg">
-                    <div class = "max-w-7xl mx-auto px-6 flex justify-between items-center">
-                        <div class = "text-navy text-4xl font-bold tracking-tighter">
-                            ResumerAnalyzer
-                        </div>
-                        <div class = "hidden md:flex items-center gap-6">
-                            <button class = "bg-navy px-5 py-2 border-2 border-navy rounded-full hover:bg-navy hover:text-white transition">
-                                Sign Up
-                            </button>
-                            <button class = "px-5 py-2 border-2 border-navy bg-white text-navy rounded-full hover:bg-gray-200 transition">
-                                Log In
-                            </button>
-                        </div>
-                    </div>
-                </nav>
+       </head>
+           <body class = "bg-cream min-h-screen font-sans text-navy">
+               <nav class = "bg-cream text-white w-full py-5 shadow-lg">
+                   <div class = "max-w-7xl mx-auto px-6 flex justify-between items-center">
+                       <div class = "text-navy text-4xl font-bold tracking-tighter">
+                           ResumerAnalyzer
+                       </div>
+                       <div class = "hidden md:flex items-center gap-6">
+                           <button onclick = "signUp()" class = "bg-navy px-5 py-2 border-2 border-navy rounded-full hover:bg-navy hover:text-white transition">
+                               Sign Up
+                           </button>
+                           <button onclick = "logIn()" class = "px-5 py-2 border-2 border-navy bg-white text-navy rounded-full hover:bg-gray-200 transition">
+                               Log In
+                           </button>
+                       </div>
+                   </div>
+               </nav>
 
-            
-            <main class = "max-w-4xl mx-auto mt-16 px-6 text-center">
-                <h1 class = "text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
-                    To Provide <br>
-                    <span class ="text-blue">Intelligent</span> and <span class ="text-blue">Personalized</span> Career Guidance Through <span class ="text-blue">Automated</span> Resume <span class ="text-blue">Analysis</span>.
-                </h1>
 
-                <p class = "text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-                    Upload your resume to get smarter advice and better career decisions.
-                </p>
+          
+           <main class = "max-w-4xl mx-auto mt-16 px-6 text-center">
+               <h1 class = "text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+                   To Provide <br>
+                   <span class ="text-blue">Intelligent</span> and <span class ="text-blue">Personalized</span> Career Guidance Through <span class ="text-blue">Automated</span> Resume <span class ="text-blue">Analysis</span>.
+               </h1>
 
-                <div class = "glass rounded-3xl p-8 shadow-xl max-w-xl mx-auto border-2 border-dashed border-skyblue">
-                    <div id = "drop-zone" class = "py-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/50 transition rounded-2xl">
-                        <svg xmlns = "http://www.w3.org/2000/svg" class = "h-16 w-16 text-blue mb-4" fill = "none" viewBox = "0 0 24 24" stroke = "currentColor">
-                            <path stroke-linecap = "round" stroke-linejoin = "round" stroke-width = "1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                        </svg>
 
-                        <p class = "text-xl font-semibold mb-1 text-navy">
-                            Drag & Drop Your Resume Here
-                        </p>
-                        <p class = "text-sm text-gray-500">
-                            PDF or DOCX files
-                        </p>
-                        <input type = "file" id = "file-upload" class = "hidden">
-                    </div>
+               <p class = "text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                   Upload your resume to get smarter advice and better career decisions.
+               </p>
 
-                    <button onclick = "window.location.href='#results'" class = "w-full mt-6 bg-navy text-white font-bold py-4 rounded-xl hover:bg-blue transition-all transform hover:scale-[1.02] shadow-lg">
-                        Analyze My Resume
-                    </button>
-                </div>
-            </main>
-        </body>
+
+               <div class = "glass rounded-3xl p-8 shadow-xl max-w-xl mx-auto border-2 border-dashed border-skyblue">
+                   <div id = "drop-zone" class = "py-12 flex flex-col items-center justify-center cursor-pointer hover:bg-white/50 transition rounded-2xl">
+                       <svg xmlns = "http://www.w3.org/2000/svg" class = "h-16 w-16 text-blue mb-4" fill = "none" viewBox = "0 0 24 24" stroke = "currentColor">
+                           <path stroke-linecap = "round" stroke-linejoin = "round" stroke-width = "1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                       </svg>
+
+
+                       <p class = "text-xl font-semibold mb-1 text-navy">
+                           Drag & Drop Your Resume Here
+                       </p>
+                       <p class = "text-sm text-gray-500">
+                           PDF or DOCX files
+                       </p>
+                       <input type = "file" id = "file-upload" class = "hidden">
+                   </div>
+
+
+                   <button onclick = "window.location.href='#results'" class = "w-full mt-6 bg-navy text-white font-bold py-4 rounded-xl hover:bg-blue transition-all transform hover:scale-[1.02] shadow-lg">
+                       Analyze My Resume
+                   </button>
+               </div>
+           </main>
+
+
+           <div id = "auth-modal" class = "hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+               <div class = "glass max-w-md w-full p-10 rounded-3xl shadow-2xl relative mx-4">
+                   <button onclick = "closeModal()" class = "absolute top-4 right-4 text-navy hover:text-blue">
+                       <svg xmlns = "http://www.w3.org/2000/svg" class = "h-6 w-6" fill = "none" viewBox = " 0 0 24 24" stroke = "currentColor">
+                           <path stroke-linecap = "round" stroke-linejoin = "round" stroke-width = "2" d = "M6 18L18 6M6 6l12 12"></path>
+                       </svg>
+                   </button>
+
+
+                   <div id = "modal-content">
+                       <h2 id = "modal-title" class = "text-3xl font-bold text-navy text-center mb-6">Sign Up</h2>
+                       <form class = "space-y-4" onsubmit="handleAuth(event)">
+                           <div id = "name-field">
+                               <label class = "block text-sm font-semibold text-navy mb-1">Full Name</label>
+                               <input type = "text" id = "auth-name" placeholder="First and Last Name" class = "w-full px-4 py-3 rounded-xl border border-blue/30 focus:ring-2 focus:ring-2 focus:ring-skyblue outline-none bg-white/50">
+                           </div>
+                           <div>
+                               <label class ="block text-sm font-semibold text navy mb-1">Email</label>
+                               <input type ="email" id ="auth-email" required placeholder ="email@example.com" class ="w-full px-4 py-3 rounded-xl border border-blue/30 focus:ring-2 focus:ring-skyblue outline-none bg-white/50">
+                           </div>
+                           <div class = "relative">
+                               <label class ="block text-sm font-semibold text-navy mb-1">Password</label>
+                               <div class = "relative">
+                                   <input type = "password" id ="auth-pass" required placeholder ="Enter password" class = "w-full px-4 py-3 rounded-xl border border-blue/30 focus:ring-2 focus:ring-skyblue outline-none bg-white/50">
+                                   <button type = "button" onclick="eye()" class = "absolute inset-y-0 right-0 pr-3 flex items-center text-navy/50 hover:text-navy">
+                                       <svg xmlns = "http://www.w3.org/2000/svg" width = "20" height="20" viewBox="0 0 24 24" fill ="none" stroke ="currentColor" stroke-width="2" stroke-linecap ="round" stroke-linejoin="round">
+                                           <path d = "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                           <circle cx = "12" cy = "12" r ="3"></circle>
+                                           <line id = "eye-slash" x1="1" y1 = "1" x2="23" y2="23" class = "text-navy"></line>
+                                       </svg>
+                                   </button>
+                               </div>
+                           </div>
+
+
+                           <button type ="submit" class = "w-full bg-navy text-white font-bold py-4 rounded-xl hover: bg-blue transition shadow-lg mt-4">
+                               Submit
+                           </button>
+                       </form>
+                   </div>
+               </div>
+           </div>
+      
+           <script src ="./javascript/index.js"></script>
+          
+       </body>
 </html>
