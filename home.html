@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard | ResumeAnalyzer</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <script>
+            tailwind.config = {
+                theme:{
+                    extend: { 
+                        colors: {
+                        navy: '#355872',
+                        blue: '#7AAACE',
+                        skyblue: '#9CD5FF',
+                        cream: '#F7F8F0',
+                        lightnavy:'#6389a5',
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <style>
+            .glass {
+                background: rgba(255,255,255,0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+        </style>
+    </head>
+
+    <body class = "bg-cream min-h-screen font-sans text-navy flex overflow-hidden">
+
+        <aside id="sidebar" class="w-64 bg-navy text-white flex flex-col h-screen transition-all duration-300 relative z-50">
+            
+            <div class="p-6 flex items-center justify-between border-b border-white/10 mb-4">
+                <h1 id="sidebar-logo" class="text-xl font-bold tracking-tighter truncate">ResumeAnalyzer</h1>
+
+                <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <svg id="hamburger-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path id="line-1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16" />
+                        <path id="line-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16" />
+                        <path id="line-3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="flex-grow px-4 space-y-4 overflow-x-hidden">
+                <a href="home.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition bg-white/5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">Home</span>
+                </a>
+
+                <a href="resume.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">My Resume</span>
+                </a>
+
+                <a href="results.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg> 
+
+                    <span class="sidebar-text font-medium">Job Search</span>
+                </a>
+
+                <a href="saved.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">Saved Jobs</span>
+                </a>
+
+                <a href="chatbot.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium text-white">AI Career Coach</span>
+                </a>
+
+                <div class="pt-4 pb-2">
+                    <div class="h-px bg-white/10 w-full"></div>
+                </div>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">Help Center</span>
+                </a>
+            </nav>
+
+            <div class="mt-auto p-4 border-t border-white/10">
+                <div class="flex items-center gap-3 px-2 py-3 rounded-2xl hover:bg-white/5 transition-colors cursor-pointer group">
+                    <div class="w-10 h-10 shrink-0 rounded-full bg-blue border-2 border-skyblue/30 flex items-center justify-center text-white font-bold shadow-inner">
+                        JD
+                    </div>
+
+                    <div class="sidebar-text overflow-hidden transition-all duration-300">
+                        <p class="text-sm font-bold truncate">John Doe</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main id="main-content" class="flex-grow h-screen overflow-y-auto p-8 lg:p-12 transition-all bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white via-cream to-skyblue/10">
+            <header class="mb-10 flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-navy">Welcome back, John!</h2>
+                    <p class="text-navy/60">Ready to see where your skills can take you today?</p>
+                </div>
+
+                <div class="hidden md:block"></div>
+            </header>
+
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <div class="lg:col-span-2 glass p-8 rounded-3xl shadow-xl border-white/40 flex flex-col justify-center items-center text-center border-2 border-dashed border-blue/30 hover:border-blue/60 transition-all group">
+                    <div class="w-16 h-16 bg-blue/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                    </div>
+
+                    <h3 class="text-xl font-bold mb-2">Upload New Resume</h3>
+                    <p class="text-navy/50 mb-6 max-w-xs">Drag and drop your PDF or DOCX here to update your career matching profile.</p>
+                    
+                    <input type="file" id="resumeUpload" class="hidden" accept=".pdf,.docx">
+                    <button onclick="document.getElementById('resumeUpload').click()" class="bg-navy text-white px-8 py-3 rounded-xl font-bold hover:bg-blue transition-colors shadow-lg">
+                        Browse Files
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="glass p-6 rounded-3xl shadow-md border-white">
+                        <p class="text-sm font-bold text-navy/40 uppercase tracking-wider">Top Match Score</p>
+                        <p class="text-4xl font-black text-blue mt-1">94%</p>
+                        <p class="text-xs text-green-500 font-bold mt-2">↑ 4% from last month</p>
+                    </div>
+
+                    <div class="glass p-6 rounded-3xl shadow-md border-white">
+                        <p class="text-sm font-bold text-navy/40 uppercase tracking-wider">Active Applications</p>
+                        <p class="text-4xl font-black text-navy mt-1">08</p>
+                        
+                        <a href="#" class="text-xs text-blue font-bold mt-2 inline-block underline">View tracking →</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold">Top Career Matches</h3>
+                    <button class="text-blue font-bold hover:underline">View All Matches</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-navy/5 hover:shadow-xl transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-cream rounded xl flex items-center justify-center font-bold text-blue">G</div>
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">98% Match</span>
+                        </div>
+
+                        <h4 class="font-bold text-lg group-hover:text-blue transition-colors">Senior Product Designer</h4>
+                        <p class="text-navy/60 text-sm mb-4">Google • Mountain View, CA</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-[10px] bg-navy/5 px-2 py-1 rounded-md font-medium uppercase">Figma</span>
+                            <span class="text-[10px] bg-navy/5 px-2 py-1 rounded-md font-medium uppercase">React</span>
+                            <span class="text-[10px] bg-navy/5 px-2 py-1 rounded-md font-medium uppercase">UI/UX</span>
+                        </div>
+
+                        <button class="w-full py-3 rounded-xl bg-navy/5 group-hover:bg-blue group-hover:text-white font-bold transition-all text-sm">View Details</button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-navy/5 hover:shadow-xl transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-cream rounded-xl flex items-center justify-center font-bold text-blue">A</div>
+                            <span class="bg-blue/10 text-blue px-3 py-1 rounded-full text-xs font-bold">85% Match</span>
+                        </div>
+
+                        <h4 class="font-bold text-lg group-hover:text-blue transition-colors">UX Researcher</h4>
+                        <p class="text-navy/60 text-sm mb-4">Airbnb • Remote</p>
+
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="text-[10px] bg-navy/5 px-2 py-1 rounded-md font-medium uppercase">Strategy</span>
+                            <span class="text-[10px] bg-navy/5 px-2 py-1 rounded-md font-medium uppercase">Testing</span>
+                        </div>
+
+                        <button class="w-full py-3 rounded-xl bg-navy/5 group-hover:bg-blue group-hover:text-white font-bold transition-all text-sm">View Details</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src ="./javascript/home.js"></script>
+    </body>
+</html>
