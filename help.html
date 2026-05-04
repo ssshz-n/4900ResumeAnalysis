@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Help Center | ResumeAnalyzer</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <script>
+            tailwind.config = {
+                theme:{
+                    extend: { 
+                        colors: {
+                        navy: '#355872',
+                        blue: '#7AAACE',
+                        skyblue: '#9CD5FF',
+                        cream: '#F7F8F0',
+                        lightnavy:'#6389a5',
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <style>
+            .glass {
+                background: rgba(255,255,255,0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+            }
+
+            .faq-answer{
+                max-height: 0;
+                overflow: hidden;
+                transition: all 0.3s ease-in-out;
+                opacity: 0;
+            }
+
+            .faq-item.active .faq-answer{
+                max-height: 300px;
+                opacity: 1;
+                padding-bottom: 1.5rem;
+            }
+
+            .faq-item.active svg{
+                transform: rotate(180deg);
+            }
+
+            #backToTop{
+                display: none;
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                z-index: 100;
+            }
+
+            .sticky-side{
+                position: sticky;
+                top: 2rem;
+            }
+        </style>
+    </head>
+
+    <body class="bg-cream min-h-screen font-sans text-navy flex overflow-hidden">
+
+        <aside id="sidebar" class="w-64 bg-navy text-white flex flex-col h-screen transition-all duration-300 relative z-50">
+            <div class="p-6 flex items-center justify-between border-b border-white/10 mb-4">
+                <h1 id="sidebar-logo" class="text-xl font-bold tracking-tighter truncate">
+                    ResumeAnalyzer
+                </h1>
+
+                <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="flex-grow px-4 space-y-4 overflow-x-hidden">
+                <a href="home.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition bg-white/5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">Home</span>
+                </a>
+
+                <a href="resume.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">My Resume</span>
+                </a>
+
+                <a href="results.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg> 
+
+                    <span class="sidebar-text font-medium">Job Search</span>
+                </a>
+
+                <a href="saved.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">Saved Jobs</span>
+                </a>
+
+                <a href="chatbot.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium text-white">AI Career Coach</span>
+                </a>
+
+                <div class="pt-4 pb-2">
+                    <div class="h-px bg-white/10 w-full"></div>
+                </div>
+
+                <a href="help.html" class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/10 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 text-skyblue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+
+                    <span class="sidebar-text font-medium">Help Center</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main id="main-scroll" class="flex-grow h-screen overflow-y-auto scroll-smooth">
+            <section class="bg-navy text-white py-20 px-8 text-center relative">
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <h2 class="text-4xl font-bold mb-4 tracking-tight">
+                        How can we help you?
+                    </h2>
+
+                    <p class="text-skyblue/80 mb-8">
+                        Browse our frequently asked questions or find us below!
+                    </p>
+
+                    <div class="relative">
+                        <input type="text" id="faqSearch" onkeyup="filterFAQs()" placeholder="Search by keywords (eg.,'resume')..." class="w-full py-4 px-6 rounded-2xl text-navy focus:ring-4 focus:ring-skyblue/30 outline-none shadow-2xl">
+                    </div>
+                </div>
+            </section>
+
+            <div class="max-w-6xl mx-auto px-8 py-12 grid md:grid-cols-3 gap-12">
+                <div class="md:col-span-2 space-y-4" id="faqList">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+
+                        Commonly Asked Questions
+                    </h3>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">How does ResumeAnalyzer work?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Our AI analyzer compares your resume against real-world job descriptions, looking for key skills to give you a matching score.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">Is my data secure?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Yes. We use Supabase which provides enterprise-security features and excrypted data storage. Your resumes are only stored if you choose to save them on your account.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">What file formats are supported?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            We currently support PDF and Word Docx files. PDF is recommended for layout consistency.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">How often can I analyze my resume?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            There are no limits! Tweak and re-run your resume as many times as you need to improve your resume matching score!
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">Why is my matching percentage low?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            This happens if specific keywords from the job description are missing. Use our AI Career Coach to find missing gaps!
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">Can I save job listings?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Yes! Use the "Saved Jobs" tab to track positions you like.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">Can I prepare for interviews here?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Yes, the AI Career Coach can provide mock interview questions based on the job you're targeting.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">What if the AI Career Coach stop responding?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Try refreshing the page. If issues persist, please contact us.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">Can I manage multiple resumes?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Currently, we analyze one resume at a time. Tailoring your master resume for each job gives the best results.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">Is there a mobile app?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            We are web-based and mobile-optimized! A standalone app is in development.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">How do I delete my account?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Please email us and we will process your deletion request within 48 hours.
+                        </div>
+                    </div>
+
+                    <div class="faq-item glass rounded-2xl cursor-pointer hover:shadow-md transition-all">
+                        <div class="p-6 flex justify-between items-center" onclick="toggleFaq(this)">
+                            <span class="font-bold">How do I contact the AI Career Coach?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+
+                        <div class="faq-answer px-6 text-navy/70 text-sm">
+                            Click the "AI Coach" tab in your sidebar to start a real-time session.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="sticky-side space-y-6">
+                        <div class="bg-navy p-8 rounded-3xl text-white shadow-2xl">
+                            <h4 class="text-xl font-bold mb-6">Contact Us</h4>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-skyblue text-[10px] font-bold uppercase tracking-widest mb-1">Support email</p>
+                                    <p class="text-sm font-medium">support@ResumeAnalyzer.com</p>
+                                </div>
+
+                                <div>
+                                    <p class="text-skyblue text-[10px] font-bold uppercase tracking-widest mb-1">Response Time</p>
+                                    <p class="text-sm font-medium">Within 24 hours</p>
+                                </div>
+
+                                <div class="pt-4 border-t border-white/10">
+                                    <p class="text-skyblue text-[10px] font-bold uppercase tracking-widest mb-1">Office Hours</p>
+                                    <p class="text-sm font-medium">Monday - Friday<br>9:00 AM - 6:00 PM EST</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass p-6 rounded-3xl">
+                            <h5 class="font-bold mb-2">Help Center v1.0</h5>
+                            <p class="text-xs text-navy/60">Find the latest career advice and platform updates here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-20"></div>
+        </main>
+
+        <button id="backToTop" onclick="scrollToTop()" class="bg-blue text-white p-4 rounded-full shadow-2xl hover:bg-navy transition-all transform hover:scale-110">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7" />
+            </svg>
+        </button>
+
+        <script src="./javascript/help.js"></script>
+        <script src="./javascript/home.js"></script>
+    </body>
+</html>
