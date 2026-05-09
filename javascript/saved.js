@@ -1,3 +1,5 @@
+//for debugging
+console.log("LocalStorage Content:", localStorage.getItem('savedJobs'));
 /*Updates the UI with user data stored in localStorage once the DOM is ready.*/
 document.addEventListener('DOMContentLoaded', () => {
     const name = localStorage.getItem('userName');
