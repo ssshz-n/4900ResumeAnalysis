@@ -2,10 +2,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const name = localStorage.getItem('userName');
     if (name) {
-        // Update Sidebar Name using the CLASS you already have
+        // Update Sidebar Name using the class we have
         const sideName = document.querySelector('.sidebar-text p');
         if (sideName) sideName.innerText = name;
-        // Update Initials using the CLASS you already have
+        // Update Initials using the class we have
         const avatar = document.querySelector('.w-10.h-10.shrink-0.rounded-full');
         if (avatar) {
             const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
