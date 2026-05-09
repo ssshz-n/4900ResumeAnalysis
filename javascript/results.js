@@ -1,3 +1,20 @@
+/*Updates the UI with user data stored in localStorage once the DOM is ready.*/
+document.addEventListener('DOMContentLoaded', () => {
+    const name = localStorage.getItem('userName');
+    if (name) {
+        // Update Sidebar Name using the CLASS you already have
+        const sideName = document.querySelector('.sidebar-text p');
+        if (sideName) sideName.innerText = name;
+        // Update Initials using the CLASS you already have
+        const avatar = document.querySelector('.w-10.h-10.shrink-0.rounded-full');
+        if (avatar) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+            avatar.innerText = initials;
+        }
+    }
+});
+
+/*Used to normalize full state names (e.g., "California") to codes (e.g., "ca") for search matching.*/
 const stateMap = {
            "alabama": "al", "alaska": "ak", "arizona": "az", "arkansas": "ar", "california": "ca",
            "colorado": "co", "connecticut": "ct", "delaware": "de", "florida": "fl", "georgia": "ga",
@@ -10,20 +27,25 @@ const stateMap = {
            "south dakota": "sd", "tennessee": "tn", "texas": "tx", "utah": "ut", "vermont": "vt",
            "virginia": "va", "washington": "wa", "west virginia": "wv", "wisconsin": "wi", "wyoming": "wy"
        };
-    
+
+// Switches the filter modal between visible and hidden
 function toggleModal(){
     const modal = document.getElementById("filterModal");
     modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
 }
 
+// Closes the modal only if the user clicks the background overlay
 function closeModal(e){
     if(e.target.id === 'filterModal') toggleModal();
 }
 
+// Applies the search logic and closes the modal
 function applyFilter(){
     search();
     toggleModal();
 }
+
+//Handles the expansion and closing of the navigation sidebar
 function openSidebar(){
     const sidebar = document.getElementById('sidebar');
     const logo = document.getElementById('sidebar-title');
@@ -42,10 +64,12 @@ function openSidebar(){
     }
 }
 
+//Updates the percentage text next to the slider in real-time.
 const slider = document.getElementById('slider');
 const matchValue = document.getElementById('matchValue');
 slider.addEventListener('input', ()=>matchValue.textContent = slider.value + '%');
 
+//Clears all input fields, resets dropdowns/sliders to defaults, and refreshes search.
 function clearAll(){
     document.getElementById('filter-title').value ='';
     document.getElementById('filter-location').value ='';
@@ -60,6 +84,7 @@ function clearAll(){
     search();
 }
 
+//Converts strings to lowercase and replaces full state names with abbreviations
 function normalizeLocation(str){
     let normalized = str.toLowerCase().replace(/,/g, ' ').trim();
     for(const [full, abbr] of Object.entries(stateMap)){
@@ -69,6 +94,7 @@ function normalizeLocation(str){
     return normalized;
 }
 
+//Filters job cards based on title, location, salary, experience, and match score.
 function search(){
     const title = document.getElementById('filter-title').value.toLowerCase();
     const enteredLocation = document.getElementById('filter-location').value;
@@ -90,6 +116,8 @@ function search(){
         const fitValue = parseInt(fitBadge);
         const cardDate = card.getAttribute('data-date');
         const matchesTitle = cardText.includes(title);
+
+        // Location Match (checks both card text and data attribute)
         const words = location.split(/\s+/).filter(w => w.length >1);
         let matchesLocation = true;
         if(words.length>0){
@@ -100,6 +128,7 @@ function search(){
         const matchesExp = experience ==="" || cardText.includes(experience);
         const matchesDate = date ==="" || cardDate === date;
         
+        //Salary Extraction and Comparison
         let matchesSalary = true;
         if(minSalaryInput !==""){
             const salaryMatch = cardText.match(/\$(\d+)/);
@@ -110,6 +139,7 @@ function search(){
             }
         }
         const matchesScore = fitValue >= minMatchValue;
+        // Final Visibility Toggle: Card only shows if ALL active filters return true
         if (matchesTitle && matchesLocation && matchesType && matchesSalary && matchesExp && matchesScore && matchesSetting && matchesDate) {
             card.style.display = 'flex';
         } 
