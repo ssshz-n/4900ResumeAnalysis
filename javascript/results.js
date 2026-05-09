@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             avatar.innerText = initials;
         }
     }
+    syncSaveButtons();
 });
 
 /*Used to normalize full state names (e.g., "California") to codes (e.g., "ca") for search matching.*/
@@ -204,9 +205,10 @@ async function search(isNew = true) {
                 </div>
                 <div class="flex flex-col gap-2 w-full md:w-auto shrink-0">
                     <a href="${job.redirect_url}" target="_blank" class="text-center md:w-36 bg-navy text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-blue transition-all">Apply externally</a>
-                    <button class="md:w-36 bg-white border border-navy/10 text-navy px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-cream transition-all">Save Job</button>
+                    <button onclick = "saveJob(this)" class="md:w-36 bg-white border border-navy/10 text-navy px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-cream transition-all">Save Job</button>
                 </div>
             `;
+            syncSaveButtons();
             //put new card in
             container.appendChild(card);
         });
@@ -219,3 +221,89 @@ async function search(isNew = true) {
         isLoading = false;
     }
 }
+
+//function for checking removal and adding of saved job,
+//checks the entire page to see if its saved if it is change button status
+//if removed change button status
+function syncSaveButtons() {
+    //gets the list of saved jobs from local storage, or empty if there are none
+    const savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
+    //select all job cards that is shown on the page
+    const cards = document.querySelectorAll('.job-card');
+    
+    cards.forEach(card => {
+        //get the title and company name of the job card for identification
+        const title = card.querySelector('h4').innerText;
+        const company = card.querySelector('.text-navy\\/60').innerText.split(' • ')[0];
+        const button = card.querySelector('button'); //Finds the button of this card
+        //check if job is already saved
+        const isAlreadySaved = savedJobs.some(j => j.title === title && j.company === company);
+        
+        if (isAlreadySaved) {
+            // change the button on the job page to show that the job is already saved
+            button.innerText = "Saved!";
+            button.classList.replace('bg-navy', 'bg-blue');
+            //disable click to prevent user to click on it to save again
+            button.onclick = null;
+            button.style.cursor = 'default';
+        }
+        else {
+            // when the job card is removed it will turn back to not saves
+            button.innerText = "Save Job";
+            button.classList.replace('bg-blue', 'bg-navy');
+            //savejob function again and reset the pointer
+            button.onclick = function() { saveJob(this); };
+            button.style.cursor = 'pointer';
+        }
+    });
+}
+
+//event listener for updating page infor everytime the page is shown
+window.addEventListener('pageshow', () => {
+    syncSaveButtons();
+});
+
+//function for when clicking the save button, saves data to local storage
+function saveJob(buttonElement) {
+    //get job card container
+    const card = buttonElement.closest('.job-card');
+    // Extract the data from the UI elements
+    const jobData = {
+        title: card.querySelector('h4').innerText,
+        // splits the string
+        company: card.querySelector('.text-navy\\/60').innerText.split(' • ')[0],
+        location: card.querySelector('.text-navy\\/60').innerText.split(' • ')[1] || "Remote",
+        // Gets the salary
+        salary: card.querySelector('.text-blue') ? card.querySelector('.text-blue').innerText : "Salary Undisclosed",
+        // Gets the first letter for the logo
+        logo: card.querySelector('.w-14').innerText,
+        // Gets the application link if it's an API result, if there isnt then nothing happens
+        url: card.querySelector('a') ? card.querySelector('a').href : "#"
+    };
+    
+    // load from local stroage
+    let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
+    // Check for duplicates based on Title and Company
+    const isDuplicate = savedJobs.some(j => j.title === jobData.title && j.company === jobData.company);
+    
+    if (isDuplicate) {
+        alert("You have already saved this job!");
+    }
+    else {
+        //add new job to local storage
+        savedJobs.push(jobData);
+        localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+        // Visual feedback
+        buttonElement.innerText = "Saved!";
+        buttonElement.classList.replace('bg-navy', 'bg-blue');
+        alert("Job saved successfully!");
+    }
+    
+    //make sure that the button status changes and is reflected when its unsaved and saved
+    buttonElement.innerText = "Saved!";
+    buttonElement.classList.remove('bg-navy');
+    buttonElement.classList.add('bg-blue');
+    // Force sync
+    syncSaveButtons();
+}
+
