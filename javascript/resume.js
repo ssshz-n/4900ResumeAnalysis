@@ -48,3 +48,17 @@ function addExperience(){
         newCard.style.transform = 'translateY(0)';
     }, 10);
 }
+
+const fileInput = document.getElementById("resumeFile");
+
+const formData = new FormData();
+formData.append("file",fileInput.files[0]);
+
+fetch("https://your-unique-codespace-url-8080.app.github.dev/upload",{
+    method:"POST",
+    body:formData
+})
+.then(response => response.text())
+.then(data => {
+    console.log(data);
+})

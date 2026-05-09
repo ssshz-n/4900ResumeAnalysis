@@ -1,0 +1,4 @@
+/workspaces/4900ResumeAnalysis/backend/src/main/java/com/resume/backend/BackendApplication.java
+/workspaces/4900ResumeAnalysis/backend/src/main/java/com/resume/backend/controller/ResumeController.java
+/workspaces/4900ResumeAnalysis/backend/src/main/java/com/resume/backend/service/DOCXParser.java
+/workspaces/4900ResumeAnalysis/backend/src/main/java/com/resume/backend/service/PDFParser.java

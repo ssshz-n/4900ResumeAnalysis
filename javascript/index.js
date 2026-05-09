@@ -118,3 +118,55 @@ function eye(){
        slash.classList.remove('hidden'); //turn the line back, hide password
    }
 }
+
+async function uploadFile() {
+   const fileInput = document.getElementById('file-upload');
+
+   if (!fileInput || fileInput.files.length === 0) {
+      alert("Please select a file first by clicking the 'Drag & Drop' area.");
+      return;
+   }
+
+   const formData = new FormData();
+   formData.append("file", fileInput.files[0]);
+
+   try {
+      const BACKEND_URL = "https://reimagined-space-parakeet-x56xjw7945vf6rqw-8080.app.github.dev/upload";
+      
+      const response = await fetch(BACKEND_URL, {
+         method: "POST",
+         body: formData
+      });
+
+      if (!response.ok) {
+         throw new Error("Server error: " + response.statusText);
+      }
+
+      const extractedText = await response.text();
+      
+      localStorage.setItem('extractedResumeText', extractedText);
+      
+      window.location.href = 'results.html';
+
+   } 
+   catch (error) {
+      console.error("Upload failed:", error);
+      alert("Connection failed. Ensure Spring Boot is running and Port 8080 is Public.");
+   }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+   const dropZone = document.getElementById('drop-zone');
+   const fileInput = document.getElementById('file-upload');
+
+   if (dropZone && fileInput) {
+      dropZone.addEventListener('click', () => fileInput.click());
+      
+      fileInput.addEventListener('change', () => {
+         if (fileInput.files.length > 0) {
+            const fileName = fileInput.files[0].name;
+            dropZone.querySelector('p').innerText = "Selected: " + fileName;
+         }
+      });
+   }
+});
