@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const name = localStorage.getItem('userName');
     if (name) {
-        // Update Sidebar Name using the class we have
+        // Update Sidebar Name using the  class we have
         const sideName = document.querySelector('.sidebar-text p');
         if (sideName) sideName.innerText = name;
         // Update Initials using the class we have
@@ -46,21 +46,22 @@ function applyFilter(){
 }
 
 //Handles the expansion and closing of the navigation sidebar
-function openSidebar(){
+function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
-    const logo = document.getElementById('sidebar-title');
-    const text = document.querySelectorAll('.sidebar-text');
-    if(sidebar.classList.contains('w-64')){
+    const logo = document.getElementById('sidebar-logo'); 
+    const texts = document.querySelectorAll('.sidebar-text');
+    
+    //Checks if sidebar is currently expanded
+    if (sidebar.classList.contains('w-64')) {
+        //Shrink sidebar width
         sidebar.classList.replace('w-64', 'w-20');
         logo.classList.add('hidden');
-        text.forEach(t => t.classList.add('hidden'));
-    }
-    else{
+        texts.forEach(t => t.classList.add('hidden'));
+    } 
+    else {
         sidebar.classList.replace('w-20', 'w-64');
-        setTimeout(()=>{
-            logo.classList.remove('hidden');
-            text.forEach(t => t.classList.remove('hidden'));
-        }, 150);
+        logo.classList.remove('hidden');
+        texts.forEach(t => t.classList.remove('hidden'));
     }
 }
 
@@ -81,7 +82,7 @@ function clearAll(){
     document.getElementById('setting-all').checked = true;
     slider.value = 85;
     matchValue.textContent = '85%';
-    search();
+    search(true);
 }
 
 //Converts strings to lowercase and replaces full state names with abbreviations
@@ -94,57 +95,127 @@ function normalizeLocation(str){
     return normalized;
 }
 
-//Filters job cards based on title, location, salary, experience, and match score.
-function search(){
-    const title = document.getElementById('filter-title').value.toLowerCase();
-    const enteredLocation = document.getElementById('filter-location').value;
-    const location = normalizeLocation(enteredLocation);
-    const type = document.getElementById('filter-type').value.toLowerCase();
-    const minSalaryInput = document.getElementById('filter-min-salary').value;
-    const experience = document.getElementById('filter-experience').value.toLowerCase();
-    const date = document.getElementById('filter-date').value;
+//For the search functions
+let currentPage = 1; //For tracking Adzuna page
+let isLoading = false;//to preven multiple simultaneous API calls while scrolling
+let hasMore = true;//Becomes false when API has no more results
 
-    const workSetting = document.querySelector ('input[name="workSetting"]:checked');
-    const workSettingValue = workSetting ? workSetting.value.toLowerCase() : "";
-    const minMatchValue = parseInt(slider.value);
-    const cards = document.querySelectorAll('.job-card');
+// Run the API immediately when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    loadInitialJobs();
+    setupInfiniteScroll();
+});
 
-    cards.forEach(card => {
-        const cardText = normalizeLocation(card.innerText);
-        const cardLocation = normalizeLocation(card.getAttribute('data-location') || "");
-        const fitBadge = card.querySelector('span[class*="uppercase"]').innerText;
-        const fitValue = parseInt(fitBadge);
-        const cardDate = card.getAttribute('data-date');
-        const matchesTitle = cardText.includes(title);
+//To make sure its not empty when user comes in
+//used for first load or when user performs a new search
+function loadInitialJobs() {
+    currentPage = 1;
+    hasMore = true;
+    document.getElementById('job-listings-container').innerHTML = '';
+    search(true); // true means this is a fresh search
+}
 
-        // Location Match (checks both card text and data attribute)
-        const words = location.split(/\s+/).filter(w => w.length >1);
-        let matchesLocation = true;
-        if(words.length>0){
-            matchesLocation = words.some(word => cardText.includes(word) || cardLocation.includes(word));
-        }
-        const matchesSetting = workSettingValue = "" || cardText.includes(workSettingValue);
-        const matchesType = type === "" || cardText.includes(type);
-        const matchesExp = experience ==="" || cardText.includes(experience);
-        const matchesDate = date ==="" || cardDate === date;
-        
-        //Salary Extraction and Comparison
-        let matchesSalary = true;
-        if(minSalaryInput !==""){
-            const salaryMatch = cardText.match(/\$(\d+)/);
-            if(salaryMatch){
-                const cardSalaryValue = parseInt(salaryMatch[1]);
-                const userMinSalary = parseInt(minSalaryInput);
-                matchesSalary = cardSalaryValue >= userMinSalary;
+// Detects when the user is at the end of the page it loads and make it scrollable again
+function setupInfiniteScroll() {
+    const mainContent = document.getElementById('main-content');
+    mainContent.addEventListener('scroll', () => {
+        // If the user is close to the bottom, load more
+        if (mainContent.scrollTop + mainContent.clientHeight >= mainContent.scrollHeight - 100) {
+            if (!isLoading && hasMore) {
+                currentPage++;
+                search(false); //append to existing list
             }
         }
-        const matchesScore = fitValue >= minMatchValue;
-        // Final Visibility Toggle: Card only shows if ALL active filters return true
-        if (matchesTitle && matchesLocation && matchesType && matchesSalary && matchesExp && matchesScore && matchesSetting && matchesDate) {
-            card.style.display = 'flex';
-        } 
-        else {
-            card.style.display = 'none';
-        }
     });
+}
+
+//Filters job based on title, location, salary, experience, and match score, and filters it before it is sent to the webpage.
+//Search function that would puts and searches with real time jobs by using Adzuna's job API
+async function search(isNew = true) {
+   //resets and clear jobs if there is a new search
+    if (isNew) {
+        currentPage = 1;
+        hasMore = true;
+        document.getElementById('job-listings-container').innerHTML = '';
+    }
+    
+    //Get values from HTML filter elements
+    //use Developer and USA as default inputs, if there are no search there would still be stuff shown
+    const title = document.getElementById('filter-title').value || "Developer";
+    const location = document.getElementById('filter-location').value || "";
+    const minSalary = document.getElementById('filter-min-salary').value;
+    const jobType = document.getElementById('filter-type').value; // e.g., 'full_time'
+  
+    const container = document.getElementById('job-listings-container');
+
+    //API key
+    const APP_ID = 'b12697e4';
+    const APP_KEY = '4c4c12ab3293378ad819e6789111f730';
+
+    //Loading state for infinite scroll
+    isLoading = true;
+
+    //API URL
+    let url = `https://api.adzuna.com/v1/api/jobs/us/search/${currentPage}?app_id=${APP_ID}&app_key=${APP_KEY}&results_per_page=15&what=${encodeURIComponent(title)}`;
+  
+    // Only apply these if the user has apply them
+    if (location) url += `&where=${encodeURIComponent(location)}`;
+    if (minSalary) url += `&salary_min=${minSalary}`;
+    if (jobType && jobType !== "") url += `&contract_time=${jobType}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+      
+        //if results are empty
+        if (data.results.length === 0) {
+            hasMore = false;
+            if (isNew) container.innerHTML = '<p class="text-center p-10">No jobs found matching these filters.</p>';
+            return;
+        }
+
+        // show the results
+        data.results.forEach(job => {
+            
+            //format salary input
+            const salary = job.salary_min ? `$${job.salary_min.toLocaleString()}` : "Salary Undisclosed";
+            //create card ID
+            const card = document.createElement('div');
+            card.className = "job-card bg-white p-5 rounded-3xl shadow-sm border border-navy/5 hover:shadow-xl transition-all flex flex-col md:flex-row justify-between items-start gap-4 mb-4";
+            
+            //put job data into the card
+            card.innerHTML = `
+                <div class="flex gap-4">
+                    <div class="w-14 h-14 bg-cream rounded-xl flex items-center justify-center font-bold text-blue shrink-0 text-xl border border-navy/5">
+                        ${job.company.display_name.charAt(0)}
+                    </div>
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-2.5">
+                            <h4 class="font-bold text-lg text-navy">${job.title}</h4>
+                        </div>
+                        <p class="text-navy/60 font-medium text-sm">${job.company.display_name} • ${job.location.display_name}</p>
+                        <div class="flex gap-2 pt-1 text-[9px] font-bold text-navy/40 uppercase">
+                            <span>${job.contract_time ? job.contract_time.replace('_', ' ') : 'Full-time'}</span> •
+                            <span class="text-blue">${salary}</span> •
+                            <span>${job.category.label}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-2 w-full md:w-auto shrink-0">
+                    <a href="${job.redirect_url}" target="_blank" class="text-center md:w-36 bg-navy text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-blue transition-all">Apply externally</a>
+                    <button class="md:w-36 bg-white border border-navy/10 text-navy px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-cream transition-all">Save Job</button>
+                </div>
+            `;
+            //put new card in
+            container.appendChild(card);
+        });
+
+    } 
+    catch (error) {
+        console.error("Fetch Error:", error);
+    } 
+    finally {
+        isLoading = false;
+    }
 }
