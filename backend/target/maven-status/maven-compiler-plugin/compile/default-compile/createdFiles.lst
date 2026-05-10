@@ -1,4 +1,5 @@
 com/resume/backend/controller/ResumeController.class
 com/resume/backend/BackendApplication.class
 com/resume/backend/service/PDFParser.class
+com/resume/backend/service/GeminiService.class
 com/resume/backend/service/DOCXParser.class

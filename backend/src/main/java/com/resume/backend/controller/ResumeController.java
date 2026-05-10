@@ -1,14 +1,21 @@
 package com.resume.backend.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.resume.backend.service.PDFParser;
 import com.resume.backend.service.DOCXParser;
+import com.resume.backend.service.GeminiService;
+
+import org.json.JSONObject;
 
 //To handle API requests
 @RestController
 @CrossOrigin(origins = "*")
 public class ResumeController {
+    @Autowired
+    private GeminiService geminiService;
+
     @PostMapping("/upload")
     public String uploadResume(@RequestParam("file") MultipartFile file) {
         try{
@@ -25,10 +32,17 @@ public class ResumeController {
                 return "Unsupported file type. Please upload a PDF or DOCX file:)";
             }
 
-            return extractedText;
+            String aiAnalysis = geminiService.analyzeResume(extractedText);
+
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("candidate",aiAnalysis);
+
+            return resultJson.toString();
         }
         catch(Exception e){
-            return "Error processing file: " + e.getMessage();
+            JSONObject errJson = new JSONObject();
+            errJson.put("candidate","Error processing file: " + e.getMessage());
+            return errJson.toString();
         }
     }
 }

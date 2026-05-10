@@ -235,10 +235,19 @@
                 
                 <div class = "p-10 overflow-y-auto custom-scroll flex-grow">
                     <section class ="mb-12">
-                        <label for = "file upload" class ="cursor-pointer border-2 border-dashed border-slate-200 rounded-[2rem] p-8 flex flex-col items-center justify-center transition-all hover:bg-blue-50/50 hover:border-blue-300">
-                            <input id = "file-upload" type ="file" class ="hidden" accept =".pdf,.docx">
+                        <label for = "resumeFile" class ="cursor-pointer border-2 border-dashed border-slate-200 rounded-[2rem] p-8 flex flex-col items-center justify-center transition-all hover:bg-blue-50/50 hover:border-blue-300">
+                            <input id = "resumeFile" type ="file" class ="hidden" accept =".pdf,.docx">
                             <p class = "text-slate-900 font-bold">Upload resume in PDF or DOCX</p>
+                            <p id="uploadedFileName" class="mt-3 text-sm text-slate-400">
+                                No file selected
+                            </p>
                         </label>
+
+                        <button onclick="analyzeResume()" class="mt-6 w-full bg-blue text-white py-4 rounded-2xl font-extrabold hover:bg-navy transition-all">
+                            Analyze Uploaded Resume
+                        </button>
+
+                        <div id="analysisResults" class="hidden mt-6 bg-slate-50 p-6 rounded-3xl border border-slate-100"></div>
                     </section>
                     <div class = "flex items-center gap-4 mb-12">
                         <div class ="h-px bg-slate-100 flex-grow"></div>

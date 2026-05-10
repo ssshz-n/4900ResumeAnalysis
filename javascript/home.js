@@ -34,3 +34,29 @@ function toggleSidebar(){
         },100);
     }
 }
+
+document.getElementById('resumeUpload').addEventListener('change',async(event) =>{
+    const file = event.target.files[0];
+    if(!file) return;
+
+    console.log("Analyzing...");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const response = await fetch("https://stunning-disco-4jv4wgr4p9pqh5qv4-8080.app.github.dev/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.text();
+        
+        alert("AI Analysis:\n" + result);
+        console.log(result);
+
+    } catch (error) {
+        console.error("Upload failed:", error);
+        alert("Check the console - something went wrong.");
+    }
+});

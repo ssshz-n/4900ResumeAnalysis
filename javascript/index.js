@@ -131,7 +131,7 @@ async function uploadFile() {
    formData.append("file", fileInput.files[0]);
 
    try {
-      const BACKEND_URL = "https://reimagined-space-parakeet-x56xjw7945vf6rqw-8080.app.github.dev/upload";
+      const BACKEND_URL = "https://stunning-disco-4jv4wgr4p9pqh5qv4-8080.app.github.dev/upload";
       
       const response = await fetch(BACKEND_URL, {
          method: "POST",
