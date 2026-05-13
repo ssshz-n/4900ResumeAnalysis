@@ -14,10 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-const API_KEY = "AIzaSyAo5my1XtP333DHIOrjIDBHpTSMTmrrkuQ";
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
-//Gemini latest version
-const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`;
+const BACKEND_BASE = isLocal 
+    ? "http://localhost:8080" 
+    : "https://" + window.location.hostname.replace("-5500", "-8080") + ".app.github.dev";
 
 const chatForm = document.getElementById('chat-form');
 const userInput = document.getElementById('user-input');
@@ -38,14 +39,10 @@ chatForm.addEventListener('submit', async (e) =>{
     addMessage("Your AI coach is thinking...", 'ai', tempId);
 
     try{
-        const response = await fetch(URL, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                contents:[{
-                    parts:[{text:`You are an AI Career Coach for the website named ResumeAnalyzer. Your job is to answer user questions and provide them recommendations. Be professional, concise, and helpful. User question: ${text}`}]
-                }]
-            })
+        const response = await fetch(`${BACKEND_BASE}/chat`, { // Path added here
+        method: "POST",
+        headers: {"Content-Type": "text/plain"},
+        body: text
         });
 
         const data = await response.json();
@@ -53,13 +50,17 @@ chatForm.addEventListener('submit', async (e) =>{
         //Remove AI thinking bubble
         document.getElementById(tempId).remove();
 
-        if(data.error){
-            addMessage(`Error: ${data.error.message}`, 'ai');
-        }
-        else{
-            const botResponse = data.candidates[0].content.parts[0].text;
-            addMessage(botResponse,'ai');
-        }
+        const botResponse = data.candidate || data.response || "No response received";
+
+        addMessage(botResponse, 'ai');
+
+        // if(data.error){
+        //     addMessage(`Error: ${data.error.message}`, 'ai');
+        // }
+        // else{
+        //     const botResponse = data.candidates[0].content.parts[0].text;
+        //     addMessage(botResponse,'ai');
+        // }
     }
     catch(err){
         document.getElementById(tempId).remove();

@@ -60,6 +60,11 @@ function addExperience(){
 //     console.log(data);
 // })
 
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const BACKEND_URL = isLocal 
+    ? "http://localhost:8080" 
+    : "https://" + window.location.hostname.replace("-5500", "-8080") + ".app.github.dev";
+    
 async function analyzeResume(){
     const fileInput = document.getElementById("resumeFile");
     const resultsDiv = document.getElementById("analysisResults");
@@ -83,27 +88,24 @@ async function analyzeResume(){
     `;
 
     try{
-        const response = await fetch("https://stunning-disco-4jv4wgr4p9pqh5qv4-8080.app.github.dev/upload",{
-            method:"POST",
+        const response = await fetch(`${BACKEND_URL}/upload`, {
+            method: "POST",
             body: formData
         });
 
-        const analysis = await response.text();
+        const data = await response.json();
+        const analysisText = data.candidate || "No analysis provided.";
 
         resultsDiv.innerHTML = `
             <div class="space-y-6">
-
-            <h3 class="text-3xl font-black text-slate-900">
-                AI Resume Feedback
-            </h3>
-
-            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                <pre class="whitespace-pre-wrap text-sm leading-7 text-slate-700 font-medium">
-                    ${analysis}
-                </pre>
+                <h3 class="text-3xl font-black text-slate-900">AI Resume Feedback</h3>
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                    <div class="text-sm leading-7 text-slate-700 font-medium whitespace-pre-wrap">
+                        ${analysisText}
+                    </div>
+                </div>
             </div>
-        </div>
-`;
+        `;
     }
     catch(error){
         console.error(error);

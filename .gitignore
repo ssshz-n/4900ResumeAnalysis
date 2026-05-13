@@ -1,0 +1,24 @@
+# --- Security ---
+# Do NOT upload your API keys!
+src/main/resources/application.properties
+.env
+
+# --- Java/Maven ---
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# --- IDEs & Editors ---
+.vscode/
+.idea/
+*.swp
+*.DS_Store
+.settings/
+.project
+.classpath
+.factorypath
+
+# --- Codespaces/System ---
+.devcontainer/

@@ -32,7 +32,7 @@ public class ResumeController {
                 return "Unsupported file type. Please upload a PDF or DOCX file:)";
             }
 
-            String aiAnalysis = geminiService.analyzeResume(extractedText);
+            String aiAnalysis = geminiService.getAiResponse(extractedText,"resume");
 
             JSONObject resultJson = new JSONObject();
             resultJson.put("candidate",aiAnalysis);
@@ -42,6 +42,24 @@ public class ResumeController {
         catch(Exception e){
             JSONObject errJson = new JSONObject();
             errJson.put("candidate","Error processing file: " + e.getMessage());
+            return errJson.toString();
+        }
+    }
+
+    @PostMapping(value = "/chat")
+    @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.POST, RequestMethod.OPTIONS})
+    public String chatWithCoach(@RequestBody String userMessage){
+        try{
+            String aiResponse = geminiService.getAiResponse(userMessage, "chat");
+
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("response", aiResponse);
+
+            return resultJson.toString();
+        }
+        catch(Exception e){
+            JSONObject errJson = new JSONObject();
+            errJson.put("error", "Coach is busy: " + e.getMessage());
             return errJson.toString();
         }
     }

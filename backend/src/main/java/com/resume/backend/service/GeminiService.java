@@ -1,7 +1,6 @@
 package com.resume.backend.service;
 
 import java.io.IOException;
-
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,25 +12,32 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    private final OkHttpClient client =
-            new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient();
 
-    public String analyzeResume(String resumeText) throws IOException {
+    public String getAiResponse(String userInput, String type) throws IOException {
+        
+        String systemInstruction;
+        
+        if ("resume".equalsIgnoreCase(type)) {
+            systemInstruction = """
+                Analyze this resume. 
+                Return: 1. Missing skills, 2. Improvement suggestions. 
+                Keep the response concise and professional.
+                Resume Content:
+                """;
+        } else {
+            systemInstruction = """
+                You are a helpful, professional, and friendly AI Career Coach for ResumeAnalyzer. 
+                Answer the user's career questions, help them with interview prep, or just chat professionally.
+                Keep it conversational but career-focused.
+                User says:
+                """;
+        }
 
-        String prompt = """
-            Analyze this resume.
-
-            Return:
-            1. Missing skills
-            2. Improvement suggestions
-
-            Keep the response concise and professional
-
-            Resume:
-            """ + resumeText;
+        String fullPrompt = systemInstruction + userInput;
 
         JSONObject textPart = new JSONObject();
-        textPart.put("text", prompt);
+        textPart.put("text", fullPrompt);
 
         JSONArray partsArray = new JSONArray();
         partsArray.put(textPart);
@@ -43,8 +49,7 @@ public class GeminiService {
         contentsArray.put(contentObject);
 
         JSONObject requestBodyJson = new JSONObject();
-
-        requestBodyJson.put("contents",contentsArray);
+        requestBodyJson.put("contents", contentsArray);
 
         RequestBody body = RequestBody.create(
                 requestBodyJson.toString(),
@@ -52,30 +57,25 @@ public class GeminiService {
         );
 
         Request request = new Request.Builder()
-                .url(
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
-                + apiKey
-                )
+                .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" + apiKey)
                 .post(body)
                 .build();
 
-        Response response = client.newCall(request).execute();
+        try (Response response = client.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            JSONObject json = new JSONObject(responseBody);
 
-        String responseBody = response.body().string();
+            if (!json.has("candidates")) {
+                return "Gemini Error: " + responseBody;
+            }
 
-        System.out.println("GEMINI API RESPONSE: " + responseBody);
-        JSONObject json = new JSONObject(responseBody);
-
-        if (!json.has("candidates")) {
-            return "Gemini Error: " + responseBody; 
+            return json
+                    .getJSONArray("candidates")
+                    .getJSONObject(0)
+                    .getJSONObject("content")
+                    .getJSONArray("parts")
+                    .getJSONObject(0)
+                    .getString("text");
         }
-        
-        return json
-            .getJSONArray("candidates")
-            .getJSONObject(0)
-            .getJSONObject("content")
-            .getJSONArray("parts")
-            .getJSONObject(0)
-            .getString("text");
     }
 }
