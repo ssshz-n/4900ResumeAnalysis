@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             avatar.innerText = initials;
         }
     }
-    syncSaveButtons();
 });
 
 /*Used to normalize full state names (e.g., "California") to codes (e.g., "ca") for search matching.*/
@@ -42,7 +41,7 @@ function closeModal(e){
 
 // Applies the search logic and closes the modal
 function applyFilter(){
-    search();
+    search(true);
     toggleModal();
 }
 
@@ -69,8 +68,9 @@ function toggleSidebar() {
 //Updates the percentage text next to the slider in real-time.
 const slider = document.getElementById('slider');
 const matchValue = document.getElementById('matchValue');
-slider.addEventListener('input', ()=>matchValue.textContent = slider.value + '%');
-
+if(slider){
+    slider.addEventListener('input', ()=>matchValue.textContent = slider.value + '%');
+}
 //Clears all input fields, resets dropdowns/sliders to defaults, and refreshes search.
 function clearAll(){
     document.getElementById('filter-title').value ='';
@@ -110,15 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
 //To make sure its not empty when user comes in
 //used for first load or when user performs a new search
 function loadInitialJobs() {
-    currentPage = 1;
-    hasMore = true;
-    document.getElementById('job-listings-container').innerHTML = '';
     search(true); // true means this is a fresh search
 }
 
 // Detects when the user is at the end of the page it loads and make it scrollable again
 function setupInfiniteScroll() {
     const mainContent = document.getElementById('main-content');
+    if(!mainContent) return;
     mainContent.addEventListener('scroll', () => {
         // If the user is close to the bottom, load more
         if (mainContent.scrollTop + mainContent.clientHeight >= mainContent.scrollHeight - 100) {
@@ -134,6 +132,7 @@ function setupInfiniteScroll() {
 //Search function that would puts and searches with real time jobs by using Adzuna's job API
 async function search(isNew = true) {
    //resets and clear jobs if there is a new search
+    if(isLoading) return;
     if (isNew) {
         currentPage = 1;
         hasMore = true;
@@ -183,6 +182,8 @@ async function search(isNew = true) {
             const salary = job.salary_min ? `$${job.salary_min.toLocaleString()}` : "Salary Undisclosed";
             //create card ID
             const card = document.createElement('div');
+            //Store unique Adzuna ID on the element
+            card.setAttribute('data-job-id', job.id);
             card.className = "job-card bg-white p-5 rounded-3xl shadow-sm border border-navy/5 hover:shadow-xl transition-all flex flex-col md:flex-row justify-between items-start gap-4 mb-4";
             
             //put job data into the card
@@ -208,10 +209,10 @@ async function search(isNew = true) {
                     <button onclick = "saveJob(this)" class="md:w-36 bg-white border border-navy/10 text-navy px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-cream transition-all">Save Job</button>
                 </div>
             `;
-            syncSaveButtons();
             //put new card in
             container.appendChild(card);
         });
+         syncSaveButtons();
 
     } 
     catch (error) {
@@ -232,17 +233,18 @@ function syncSaveButtons() {
     const cards = document.querySelectorAll('.job-card');
     
     cards.forEach(card => {
-        //get the title and company name of the job card for identification
-        const title = card.querySelector('h4').innerText;
-        const company = card.querySelector('.text-navy\\/60').innerText.split(' • ')[0];
-        const button = card.querySelector('button'); //Finds the button of this card
+        //get the specific job id for specific job cards, instead of company names
+        const jobId = card.getAttribute('data-job-id');
+        const button = card.querySelector('.save-btn');
+        
         //check if job is already saved
-        const isAlreadySaved = savedJobs.some(j => j.title === title && j.company === company);
+        const isAlreadySaved = savedJobs.some(j => j.id ===jobId);
         
         if (isAlreadySaved) {
             // change the button on the job page to show that the job is already saved
             button.innerText = "Saved!";
-            button.classList.replace('bg-navy', 'bg-blue');
+            button.classList.remove('bg-white', 'text-navy');
+            button.classList.add('bg-blue', 'text-white');
             //disable click to prevent user to click on it to save again
             button.onclick = null;
             button.style.cursor = 'default';
@@ -250,7 +252,8 @@ function syncSaveButtons() {
         else {
             // when the job card is removed it will turn back to not saves
             button.innerText = "Save Job";
-            button.classList.replace('bg-blue', 'bg-navy');
+            button.classList.add('bg-white', 'text-navy');
+            button.classList.remove('bg-blue', 'text-white');
             //savejob function again and reset the pointer
             button.onclick = function() { saveJob(this); };
             button.style.cursor = 'pointer';
@@ -267,8 +270,10 @@ window.addEventListener('pageshow', () => {
 function saveJob(buttonElement) {
     //get job card container
     const card = buttonElement.closest('.job-card');
+    const jobId = card.getAttribute('data-job-id');
     // Extract the data from the UI elements
     const jobData = {
+        id: jobId,
         title: card.querySelector('h4').innerText,
         // splits the string
         company: card.querySelector('.text-navy\\/60').innerText.split(' • ')[0],
@@ -284,7 +289,7 @@ function saveJob(buttonElement) {
     // load from local stroage
     let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
     // Check for duplicates based on Title and Company
-    const isDuplicate = savedJobs.some(j => j.title === jobData.title && j.company === jobData.company);
+    const isDuplicate = savedJobs.some(j => j.id ===jobId);
     
     if (isDuplicate) {
         alert("You have already saved this job!");
@@ -295,15 +300,10 @@ function saveJob(buttonElement) {
         localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
         // Visual feedback
         buttonElement.innerText = "Saved!";
-        buttonElement.classList.replace('bg-navy', 'bg-blue');
+        buttonElement.classList.remove('bg-white', 'text-navy');
+        buttonElement.classList.add('bg-blue', 'text-white');
+        buttonElement.onclick = null;
         alert("Job saved successfully!");
     }
-    
-    //make sure that the button status changes and is reflected when its unsaved and saved
-    buttonElement.innerText = "Saved!";
-    buttonElement.classList.remove('bg-navy');
-    buttonElement.classList.add('bg-blue');
-    // Force sync
-    syncSaveButtons();
 }
 
