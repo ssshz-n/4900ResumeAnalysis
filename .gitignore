@@ -1,5 +1,4 @@
 # --- Security ---
-# Do NOT upload your API keys!
 src/main/resources/application.properties
 .env
 
